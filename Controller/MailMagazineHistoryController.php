@@ -121,7 +121,12 @@ class MailMagazineHistoryController
 
         // 検索条件をアンシリアライズする
         // base64,serializeされているので注意すること
-        $searchData = unserialize(base64_decode($sendHistory->getSearchData()));
+        $searchData = json_decode($sendHistory->getSearchData(), true);
+        $Category = new Category();
+        $Category->setPropertiesFromArray($searchData['Category']);
+        // $app->em->merge($Category);
+        $Category = $app->em->getRepository(Categroy::class)->find($Category->getId());
+        $searchData['Category'] = $Category;
 
         // 区分値を文字列に変更する
         // 必要な項目のみ
